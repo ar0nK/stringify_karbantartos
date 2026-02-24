@@ -1,0 +1,346 @@
+<Page x:Class="StringifyMaintenance.Pages.MaintenancePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      Background="#F5F6FA">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,12">
+            <TextBlock Text="Maintenance" FontSize="22" FontWeight="SemiBold" Foreground="#111827" DockPanel.Dock="Left" />
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <TextBlock Text="Signed in as:" Foreground="#6B7280" VerticalAlignment="Center" Margin="0,0,8,0" />
+                <TextBlock Text="{Binding CurrentUserName}" Foreground="#111827" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,16,0" />
+                <Button Content="Logout" Height="28" Padding="12,0" Click="LogoutButton_Click" />
+            </StackPanel>
+        </DockPanel>
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Products">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="0" Margin="0,0,0,12">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Name" Binding="{Binding Nev}" Width="220" />
+                            <DataGridTextColumn Header="Price" Binding="{Binding Ar}" Width="80" />
+                            <DataGridCheckBoxColumn Header="Available" Binding="{Binding Elerheto}" Width="80" />
+                            <DataGridTextColumn Header="Type Id" Binding="{Binding GitarTipusId}" Width="80" />
+                            <DataGridTextColumn Header="Created" Binding="{Binding Letrehozva}" Width="160" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Header="Selected product" Grid.Column="0" Margin="0,0,8,0" IsEnabled="{Binding HasSelectedProduct}">
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Id" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedProduct.Id}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" IsReadOnly="True" />
+
+                                <TextBlock Text="Name" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedProduct.Nev, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Short" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedProduct.RovidLeiras, UpdateSourceTrigger=LostFocus}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Description" Grid.Row="3" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedProduct.Leiras, UpdateSourceTrigger=LostFocus}" Grid.Row="3" Grid.Column="1" Margin="0,0,0,8" Height="60" TextWrapping="Wrap" AcceptsReturn="True" />
+
+                                <TextBlock Text="Price" Grid.Row="4" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedProduct.Ar, UpdateSourceTrigger=LostFocus}" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Available" Grid.Row="5" Grid.Column="0" Margin="0,0,8,8" />
+                                <CheckBox IsChecked="{Binding SelectedProduct.Elerheto}" Grid.Row="5" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Type Id" Grid.Row="6" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedProduct.GitarTipusId, UpdateSourceTrigger=LostFocus}" Grid.Row="6" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Created" Grid.Row="7" Grid.Column="0" Margin="0,0,8,0" />
+                                <DatePicker SelectedDate="{Binding SelectedProduct.Letrehozva}" Grid.Row="7" Grid.Column="1" />
+
+                                <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button Content="Update" Width="90" Margin="0,0,8,0" Click="UpdateProduct_Click" />
+                                    <Button Content="Delete" Width="90" Click="DeleteProduct_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="New product" Grid.Column="1" Margin="8,0,0,0">
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Name" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewProduct.Nev, UpdateSourceTrigger=LostFocus}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Short" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewProduct.RovidLeiras, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Description" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewProduct.Leiras, UpdateSourceTrigger=LostFocus}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" Height="60" TextWrapping="Wrap" AcceptsReturn="True" />
+
+                                <TextBlock Text="Price" Grid.Row="3" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewProduct.Ar, UpdateSourceTrigger=LostFocus}" Grid.Row="3" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Available" Grid.Row="4" Grid.Column="0" Margin="0,0,8,8" />
+                                <CheckBox IsChecked="{Binding NewProduct.Elerheto}" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Type Id" Grid.Row="5" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewProduct.GitarTipusId, UpdateSourceTrigger=LostFocus}" Grid.Row="5" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Created" Grid.Row="6" Grid.Column="0" Margin="0,0,8,0" />
+                                <DatePicker SelectedDate="{Binding NewProduct.Letrehozva}" Grid.Row="6" Grid.Column="1" />
+
+                                <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button Content="Add" Width="90" Margin="0,0,8,0" Click="AddProduct_Click" />
+                                    <Button Content="Clear" Width="90" Click="ClearNewProduct_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Users">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="0" Margin="0,0,0,12">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="Name" Binding="{Binding Nev}" Width="180" />
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="240" />
+                            <DataGridTextColumn Header="Permission" Binding="{Binding Jogosultsag}" Width="90" />
+                            <DataGridTextColumn Header="Active" Binding="{Binding Aktiv}" Width="80" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Header="Selected user" Grid.Column="0" Margin="0,0,8,0" IsEnabled="{Binding HasSelectedUser}">
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Id" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedUser.Id}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" IsReadOnly="True" />
+
+                                <TextBlock Text="Name" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedUser.Nev, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Email" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedUser.Email, UpdateSourceTrigger=LostFocus}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Permission" Grid.Row="3" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedUser.Jogosultsag, UpdateSourceTrigger=LostFocus}" Grid.Row="3" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Active" Grid.Row="4" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedUser.Aktiv, UpdateSourceTrigger=LostFocus}" Grid.Row="4" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="New password" Grid.Row="5" Grid.Column="0" Margin="0,0,8,0" />
+                                <PasswordBox x:Name="UpdateUserPasswordBox" Grid.Row="5" Grid.Column="1" Margin="0,0,0,0" />
+
+                                <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button Content="Update" Width="90" Margin="0,0,8,0" Click="UpdateUser_Click" />
+                                    <Button Content="Delete" Width="90" Click="DeleteUser_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="New user" Grid.Column="1" Margin="8,0,0,0">
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Name" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewUser.Nev, UpdateSourceTrigger=LostFocus}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Email" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewUser.Email, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Permission" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewUser.Jogosultsag, UpdateSourceTrigger=LostFocus}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Active" Grid.Row="3" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewUser.Aktiv, UpdateSourceTrigger=LostFocus}" Grid.Row="3" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Password" Grid.Row="4" Grid.Column="0" Margin="0,0,8,0" />
+                                <PasswordBox x:Name="NewUserPasswordBox" Grid.Row="4" Grid.Column="1" />
+
+                                <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button Content="Add" Width="90" Margin="0,0,8,0" Click="AddUser_Click" />
+                                    <Button Content="Clear" Width="90" Click="ClearNewUser_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Orders">
+                <Grid Margin="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <DataGrid ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="0" Margin="0,0,0,12">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="60" />
+                            <DataGridTextColumn Header="User Id" Binding="{Binding FelhasznaloId}" Width="90" />
+                            <DataGridTextColumn Header="Total" Binding="{Binding Osszeg}" Width="90" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="150" />
+                            <DataGridTextColumn Header="Date" Binding="{Binding Datum}" Width="160" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Header="Selected order" Grid.Column="0" Margin="0,0,8,0" IsEnabled="{Binding HasSelectedOrder}">
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Id" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedOrder.Id}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" IsReadOnly="True" />
+
+                                <TextBlock Text="User Id" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedOrder.FelhasznaloId, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Total" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedOrder.Osszeg, UpdateSourceTrigger=LostFocus}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Status" Grid.Row="3" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding SelectedOrder.Status, UpdateSourceTrigger=LostFocus}" Grid.Row="3" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Date" Grid.Row="4" Grid.Column="0" Margin="0,0,8,0" />
+                                <DatePicker SelectedDate="{Binding SelectedOrder.Datum}" Grid.Row="4" Grid.Column="1" />
+
+                                <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button Content="Update" Width="90" Margin="0,0,8,0" Click="UpdateOrder_Click" />
+                                    <Button Content="Delete" Width="90" Click="DeleteOrder_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="New order" Grid.Column="1" Margin="8,0,0,0">
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="User Id" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewOrder.FelhasznaloId, UpdateSourceTrigger=LostFocus}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Total" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewOrder.Osszeg, UpdateSourceTrigger=LostFocus}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Status" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8" />
+                                <TextBox Text="{Binding NewOrder.Status, UpdateSourceTrigger=LostFocus}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" />
+
+                                <TextBlock Text="Date" Grid.Row="3" Grid.Column="0" Margin="0,0,8,0" />
+                                <DatePicker SelectedDate="{Binding NewOrder.Datum}" Grid.Row="3" Grid.Column="1" />
+
+                                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button Content="Add" Width="90" Margin="0,0,8,0" Click="AddOrder_Click" />
+                                    <Button Content="Clear" Width="90" Click="ClearNewOrder_Click" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>
