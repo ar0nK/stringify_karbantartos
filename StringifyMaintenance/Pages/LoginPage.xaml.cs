@@ -26,16 +26,23 @@ public partial class LoginPage : Page
 
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            ErrorTextBlock.Text = "Email and password are required.";
+            ErrorTextBlock.Text = "Az email és a jelszó megadása kötelezõ.";
             return;
         }
 
         try
         {
             var user = await _authService.AuthenticateAsync(email, password);
+
             if (user == null)
             {
-                ErrorTextBlock.Text = "Invalid credentials or inactive user.";
+                ErrorTextBlock.Text = "Sikertelen bejelentkezés.";
+                return;
+            }
+
+            if (user.Jogosultsag != 9)
+            {
+                ErrorTextBlock.Text = "Nincs jogosultságod az adminisztrátori felülethez.";
                 return;
             }
 
@@ -44,7 +51,7 @@ public partial class LoginPage : Page
         }
         catch (Exception ex)
         {
-            ErrorTextBlock.Text = $"Login failed: {ex.Message}";
+            ErrorTextBlock.Text = $"Hiba történt: {ex.Message}";
         }
     }
 }

@@ -128,36 +128,38 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
 
     private async Task LoadAllAsync()
     {
-        await LoadProductsAsync();
-        await LoadUsersAsync();
-        await LoadOrdersAsync();
+        try
+        {
+            await LoadProductsAsync();
+            await LoadUsersAsync();
+            await LoadOrdersAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Betöltési hiba: {ex.Message}\n\n{ex.InnerException?.Message}",
+                            "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async Task LoadProductsAsync()
     {
         Products.Clear();
         foreach (var product in await _repository.GetProductsAsync())
-        {
             Products.Add(product);
-        }
     }
 
     private async Task LoadUsersAsync()
     {
         Users.Clear();
         foreach (var user in await _repository.GetUsersAsync())
-        {
             Users.Add(user);
-        }
     }
 
     private async Task LoadOrdersAsync()
     {
         Orders.Clear();
         foreach (var order in await _repository.GetOrdersAsync())
-        {
             Orders.Add(order);
-        }
     }
 
     private async void AddProduct_Click(object sender, RoutedEventArgs e)
