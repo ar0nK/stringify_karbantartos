@@ -24,10 +24,13 @@ public class StringifyDbContext : DbContext
             entity.Property(e => e.Email).HasColumnName("Email");
             entity.Property(e => e.Jelszo).HasColumnName("Jelszo");
             entity.Property(e => e.Salt).HasColumnName("SALT");
-            entity.Property(e => e.Aktiv).HasColumnName("Aktiv");
+            entity.Property(e => e.Aktiv)
+                  .HasColumnName("Aktiv")
+                  .HasColumnType("tinyint")
+                  .HasConversion<byte>();
             entity.Property(e => e.Jogosultsag)
                   .HasColumnName("Jogosultsag")
-                  .HasColumnType("tinyint");
+                  .HasColumnType("tinyint(3)");
         });
 
         modelBuilder.Entity<Termek>(entity =>

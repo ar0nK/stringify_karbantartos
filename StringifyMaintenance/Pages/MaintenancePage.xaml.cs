@@ -344,7 +344,7 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
         return new User
         {
             Jogosultsag = 1,
-            Aktiv = 1
+            Aktiv = true
         };
     }
 

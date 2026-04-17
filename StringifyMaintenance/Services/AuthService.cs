@@ -27,15 +27,9 @@ public class AuthService
             return null;
         }
 
-        if (user.Aktiv != 1)
+        if (!user.Aktiv)
         {
             MessageBox.Show("Ez a fiók inaktív.", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return null;
-        }
-
-        if (user.Jogosultsag != 9)
-        {
-            MessageBox.Show("Nem megfelelõ a jogosultságod.\nEz a felület kizárólag adminisztrátoroknak elérhetõ.", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
             return null;
         }
 
@@ -44,6 +38,12 @@ public class AuthService
         if (!passwordValid)
         {
             MessageBox.Show("Helytelen jelszó.", "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return null;
+        }
+
+        if (user.Jogosultsag != 9)
+        {
+            MessageBox.Show("Nem megfelelõ a jogosultságod.\nEz a felület kizárólag adminisztrátoroknak elérhetõ.", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
             return null;
         }
 

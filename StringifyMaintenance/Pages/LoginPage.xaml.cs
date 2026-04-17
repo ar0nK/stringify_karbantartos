@@ -40,12 +40,6 @@ public partial class LoginPage : Page
                 return;
             }
 
-            if (user.Jogosultsag != 9)
-            {
-                ErrorTextBlock.Text = "Nincs jogosultságod az adminisztrátori felülethez.";
-                return;
-            }
-
             Session.CurrentUser = user;
             _mainWindow.NavigateToMaintenance();
         }

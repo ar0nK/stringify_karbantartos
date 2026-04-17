@@ -32,5 +32,5 @@ public class User
     public int Jogosultsag { get; set; }
 
     [Column("Aktiv")]
-    public int Aktiv { get; set; } = 1;
+    public bool Aktiv { get; set; } = true;
 }
