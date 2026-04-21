@@ -13,6 +13,7 @@ public class StringifyDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Termek> Termekek => Set<Termek>();
     public DbSet<Rendeles> Rendelesek => Set<Rendeles>();
+    public DbSet<TermekKepek> TermekKepek => Set<TermekKepek>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,6 +52,18 @@ public class StringifyDbContext : DbContext
         modelBuilder.Entity<Rendeles>(entity =>
         {
             entity.ToTable("rendeles");
+        });
+
+        modelBuilder.Entity<TermekKepek>(entity =>
+        {
+            entity.ToTable("termek_kepek");
+            entity.Property(e => e.Id).HasColumnName("Id");
+            entity.Property(e => e.TermekId).HasColumnName("TermekId");
+            entity.Property(e => e.Kep1).HasColumnName("kep1").IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Kep2).HasColumnName("kep2").IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Kep3).HasColumnName("kep3").IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Kep4).HasColumnName("kep4").IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Kep5).HasColumnName("kep5").IsRequired().HasMaxLength(255);
         });
 
         base.OnModelCreating(modelBuilder);

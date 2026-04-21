@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StringifyMaintenance"
         mc:Ignorable="d"
-        Title="Stringify Maintenance" Height="720" Width="1100"
+        Title="Stringify Maintenance"  Height="720" Width="1100"
+        MinHeight="640" MinWidth="360"
         WindowStartupLocation="CenterScreen">
     <Grid Background="#F5F6FA">
         <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" />

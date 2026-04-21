@@ -41,6 +41,32 @@ public class MaintenanceRepository
         await db.SaveChangesAsync();
     }
 
+    public async Task<TermekKepek?> GetProductImagesAsync(int productId)
+    {
+        await using var db = await _contextFactory.CreateDbContextAsync();
+        return await db.TermekKepek.FirstOrDefaultAsync(k => k.TermekId == productId);
+    }
+
+    public async Task UpsertProductImagesAsync(int productId, TermekKepek images)
+    {
+        await using var db = await _contextFactory.CreateDbContextAsync();
+        var existing = await db.TermekKepek.FirstOrDefaultAsync(k => k.TermekId == productId);
+
+        if (existing == null)
+        {
+            existing = new TermekKepek { TermekId = productId };
+            db.TermekKepek.Add(existing);
+        }
+
+        existing.Kep1 = images.Kep1;
+        existing.Kep2 = images.Kep2;
+        existing.Kep3 = images.Kep3;
+        existing.Kep4 = images.Kep4;
+        existing.Kep5 = images.Kep5;
+
+        await db.SaveChangesAsync();
+    }
+
     public async Task<List<User>> GetUsersAsync()
     {
         await using var db = await _contextFactory.CreateDbContextAsync();

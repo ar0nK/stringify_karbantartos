@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,6 +31,28 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
                 _selectedProduct = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSelectedProduct));
+                if (_selectedProduct == null)
+                {
+                    SelectedProductImages = CreateNewProductImages();
+                }
+                else
+                {
+                    LoadSelectedProductImagesAsync(_selectedProduct.Id);
+                }
+            }
+        }
+    }
+
+    private TermekKepek _selectedProductImages = CreateNewProductImages();
+    public TermekKepek SelectedProductImages
+    {
+        get => _selectedProductImages;
+        set
+        {
+            if (_selectedProductImages != value)
+            {
+                _selectedProductImages = value;
+                OnPropertyChanged();
             }
         }
     }
@@ -73,6 +96,20 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
             if (_newProduct != value)
             {
                 _newProduct = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private TermekKepek _newProductImages = CreateNewProductImages();
+    public TermekKepek NewProductImages
+    {
+        get => _newProductImages;
+        set
+        {
+            if (_newProductImages != value)
+            {
+                _newProductImages = value;
                 OnPropertyChanged();
             }
         }
@@ -136,16 +173,23 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Betöltési hiba: {ex.Message}\n\n{ex.InnerException?.Message}",
+            MessageBox.Show($"Betï¿½ltï¿½si hiba: {ex.Message}\n\n{ex.InnerException?.Message}",
                             "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private async Task LoadProductsAsync()
     {
-        Products.Clear();
-        foreach (var product in await _repository.GetProductsAsync())
-            Products.Add(product);
+        var products = await _repository.GetProductsAsync();
+        await Dispatcher.InvokeAsync(() =>
+        {
+            Products.Clear();
+            foreach (var product in products)
+            {
+                Products.Add(product);
+            }
+            OnPropertyChanged(nameof(Products));
+        });
     }
 
     private async Task LoadUsersAsync()
@@ -170,13 +214,27 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
             return;
         }
 
+        if (!ValidateImages(NewProductImages, out var imageError))
+        {
+            MessageBox.Show(imageError, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (NewProduct.Letrehozva == null)
         {
             NewProduct.Letrehozva = DateTime.Now;
         }
 
-        await _repository.AddProductAsync(NewProduct);
+        var product = await _repository.AddProductAsync(NewProduct);
+        NewProductImages.TermekId = product.Id;
+        await _repository.UpsertProductImagesAsync(product.Id, NewProductImages);
         NewProduct = CreateNewProduct();
+        NewProductImages = CreateNewProductImages();
+        await LoadProductsAsync();
+    }
+
+    private async void RefreshProducts_Click(object sender, RoutedEventArgs e)
+    {
         await LoadProductsAsync();
     }
 
@@ -187,7 +245,15 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
             return;
         }
 
+        if (!ValidateImages(SelectedProductImages, out var imageError))
+        {
+            MessageBox.Show(imageError, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         await _repository.UpdateProductAsync(SelectedProduct);
+        SelectedProductImages.TermekId = SelectedProduct.Id;
+        await _repository.UpsertProductImagesAsync(SelectedProduct.Id, SelectedProductImages);
         await LoadProductsAsync();
     }
 
@@ -212,6 +278,7 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
     private void ClearNewProduct_Click(object sender, RoutedEventArgs e)
     {
         NewProduct = CreateNewProduct();
+        NewProductImages = CreateNewProductImages();
     }
 
     private async void AddUser_Click(object sender, RoutedEventArgs e)
@@ -339,6 +406,18 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
         };
     }
 
+    private static TermekKepek CreateNewProductImages()
+    {
+        return new TermekKepek
+        {
+            Kep1 = string.Empty,
+            Kep2 = string.Empty,
+            Kep3 = string.Empty,
+            Kep4 = string.Empty,
+            Kep5 = string.Empty
+        };
+    }
+
     private static User CreateNewUser()
     {
         return new User
@@ -355,6 +434,62 @@ public partial class MaintenancePage : Page, INotifyPropertyChanged
             Status = "New",
             Datum = DateTime.Now
         };
+    }
+
+    private async void LoadSelectedProductImagesAsync(int productId)
+    {
+        try
+        {
+            SelectedProductImages = await _repository.GetProductImagesAsync(productId) ?? CreateNewProductImages();
+            SelectedProductImages.TermekId = productId;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Image loading error: {ex.Message}\n\n{ex.InnerException?.Message}",
+                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            SelectedProductImages = CreateNewProductImages();
+        }
+    }
+
+    private static bool ValidateImages(TermekKepek images, out string errorMessage)
+    {
+        NormalizeImages(images);
+        int count = CountImages(images);
+
+        if (count < 1)
+        {
+            errorMessage = "Please provide at least 1 image URL.";
+            return false;
+        }
+
+        if (count > 5)
+        {
+            errorMessage = "You can provide up to 5 image URLs.";
+            return false;
+        }
+
+        errorMessage = string.Empty;
+        return true;
+    }
+
+    private static int CountImages(TermekKepek images)
+    {
+        return new[] { images.Kep1, images.Kep2, images.Kep3, images.Kep4, images.Kep5 }
+            .Count(value => !string.IsNullOrWhiteSpace(value));
+    }
+
+    private static void NormalizeImages(TermekKepek images)
+    {
+        images.Kep1 = NormalizeImageUrl(images.Kep1);
+        images.Kep2 = NormalizeImageUrl(images.Kep2);
+        images.Kep3 = NormalizeImageUrl(images.Kep3);
+        images.Kep4 = NormalizeImageUrl(images.Kep4);
+        images.Kep5 = NormalizeImageUrl(images.Kep5);
+    }
+
+    private static string NormalizeImageUrl(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

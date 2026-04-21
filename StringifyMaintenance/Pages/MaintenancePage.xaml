@@ -362,15 +362,22 @@
             <TabItem Header="Products">
                 <Grid Margin="0,16,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="3*" />
                     </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="Products loaded:" Foreground="#6B7280" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Products.Count}" Foreground="#111827" FontWeight="SemiBold" Margin="6,0,0,0" VerticalAlignment="Center" />
+                        <Button Content="Refresh" Style="{StaticResource GhostButton}" Height="28" Padding="12,0" Margin="12,0,0,0" Click="RefreshProducts_Click" />
+                    </DockPanel>
 
                     <DataGrid ItemsSource="{Binding Products}"
                               SelectedItem="{Binding SelectedProduct}"
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
-                              Grid.Row="0"
+                              Grid.Row="1"
                               Margin="0,0,0,16">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID"        Binding="{Binding Id}"           Width="60" />
@@ -382,20 +389,26 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="16" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <GroupBox Header="Selected product" Grid.Column="0" IsEnabled="{Binding HasSelectedProduct}">
-                            <Grid>
+                            <GroupBox Header="Selected product" Grid.Column="0" IsEnabled="{Binding HasSelectedProduct}">
+                                <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="90" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -431,20 +444,40 @@
                                 <TextBlock Text="Created"     Grid.Row="7" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
                                 <DatePicker SelectedDate="{Binding SelectedProduct.Letrehozva}"                                 Grid.Row="7" Grid.Column="1" Margin="0,0,0,10" />
 
-                                <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                                <TextBlock Text="Image 1"     Grid.Row="8" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding SelectedProductImages.Kep1, UpdateSourceTrigger=LostFocus}"          Grid.Row="8" Grid.Column="1" Style="{StaticResource FormInput}"      Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 2"     Grid.Row="9" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding SelectedProductImages.Kep2, UpdateSourceTrigger=LostFocus}"          Grid.Row="9" Grid.Column="1" Style="{StaticResource FormInput}"      Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 3"     Grid.Row="10" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding SelectedProductImages.Kep3, UpdateSourceTrigger=LostFocus}"          Grid.Row="10" Grid.Column="1" Style="{StaticResource FormInput}"     Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 4"     Grid.Row="11" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding SelectedProductImages.Kep4, UpdateSourceTrigger=LostFocus}"          Grid.Row="11" Grid.Column="1" Style="{StaticResource FormInput}"     Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 5"     Grid.Row="12" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding SelectedProductImages.Kep5, UpdateSourceTrigger=LostFocus}"          Grid.Row="12" Grid.Column="1" Style="{StaticResource FormInput}"     Margin="0,0,0,10" />
+
+                                <StackPanel Grid.Row="13" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
                                     <Button Content="Update" Style="{StaticResource PrimaryButton}" Width="88" Margin="0,0,8,0" Click="UpdateProduct_Click" />
                                     <Button Content="Delete" Style="{StaticResource DangerButton}"  Width="88" Click="DeleteProduct_Click" />
                                 </StackPanel>
-                            </Grid>
-                        </GroupBox>
+                                </Grid>
+                            </GroupBox>
 
-                        <GroupBox Header="New product" Grid.Column="2">
-                            <Grid>
+                            <GroupBox Header="New product" Grid.Column="2">
+                                <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="90" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -476,13 +509,29 @@
                                 <TextBlock Text="Created"     Grid.Row="6" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
                                 <DatePicker SelectedDate="{Binding NewProduct.Letrehozva}"                                      Grid.Row="6" Grid.Column="1" Margin="0,0,0,10" />
 
-                                <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                                <TextBlock Text="Image 1"     Grid.Row="7" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding NewProductImages.Kep1, UpdateSourceTrigger=LostFocus}"               Grid.Row="7" Grid.Column="1" Style="{StaticResource FormInput}"      Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 2"     Grid.Row="8" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding NewProductImages.Kep2, UpdateSourceTrigger=LostFocus}"               Grid.Row="8" Grid.Column="1" Style="{StaticResource FormInput}"      Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 3"     Grid.Row="9" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding NewProductImages.Kep3, UpdateSourceTrigger=LostFocus}"               Grid.Row="9" Grid.Column="1" Style="{StaticResource FormInput}"      Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 4"     Grid.Row="10" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding NewProductImages.Kep4, UpdateSourceTrigger=LostFocus}"               Grid.Row="10" Grid.Column="1" Style="{StaticResource FormInput}"     Margin="0,0,0,10" />
+
+                                <TextBlock Text="Image 5"     Grid.Row="11" Grid.Column="0" Style="{StaticResource FieldLabel}" Margin="0,0,8,10" />
+                                <TextBox   Text="{Binding NewProductImages.Kep5, UpdateSourceTrigger=LostFocus}"               Grid.Row="11" Grid.Column="1" Style="{StaticResource FormInput}"     Margin="0,0,0,10" />
+
+                                <StackPanel Grid.Row="12" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
                                     <Button Content="Add"   Style="{StaticResource PrimaryButton}" Width="88" Margin="0,0,8,0" Click="AddProduct_Click" />
                                     <Button Content="Clear" Style="{StaticResource GhostButton}"   Width="88" Click="ClearNewProduct_Click" />
                                 </StackPanel>
-                            </Grid>
-                        </GroupBox>
-                    </Grid>
+                                </Grid>
+                            </GroupBox>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
